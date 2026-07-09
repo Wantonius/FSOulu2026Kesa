@@ -10,7 +10,10 @@ interface UrlRequest {
 	action:string;
 }
 
-const useAction = ():{state:State,add:(item:ShoppingItem) => void} => {
+const useAction = ():{state:State,
+					  add:(item:ShoppingItem) => void,
+					  remove:(id:number) => void,
+					  edit:(item:ShoppingItem) => void} => {
 	
 	const [state,setState] = useState<State>({
 		list:[]
@@ -47,6 +50,14 @@ const useAction = ():{state:State,add:(item:ShoppingItem) => void} => {
 						getList();
 						return;
 					}
+					case "removeitem": {
+						getList();
+						return;
+					}
+					case "edititem": {
+						getList();
+						return;
+					}
 					default:{
 						return;
 					}
@@ -80,7 +91,29 @@ const useAction = ():{state:State,add:(item:ShoppingItem) => void} => {
 		})
 	}
 	
-	return {state,add};
+	const remove = (id:number) => {
+		setUrlRequest({
+			request:new Request("/api/shopping/"+id,{
+				"method":"DELETE"
+			}),
+			action:"removeitem"
+		})
+	}
+	
+	const edit = (item:ShoppingItem) => {
+		setUrlRequest({
+			request:new Request("/api/shopping/"+item.id,{
+				"method":"PUT",
+				"headers":{
+					"Content-Type":"application/json"
+				},
+				"body":JSON.stringify(item)
+			}),
+			action:"edititem"
+		})
+	}
+	
+	return {state,add,remove,edit};
 }
 
 export default useAction;
