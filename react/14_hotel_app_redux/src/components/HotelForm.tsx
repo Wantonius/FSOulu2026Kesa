@@ -1,9 +1,7 @@
 import React,{useState} from 'react';
 import Hotel from '../models/Hotel';
-
-interface Props {
-	addHotel(hotel:Hotel):void;
-}
+import {useDispatch} from 'react-redux';
+import {addHotel} from '../actions/hotelActions';
 
 interface State {
 	hname:string;
@@ -13,7 +11,7 @@ interface State {
 	roomprice:number;
 }
 
-const HotelForm = (props:Props) => {
+const HotelForm = () => {
 	
 	const [state,setState] = useState<State>({
 		hname:"",
@@ -22,6 +20,8 @@ const HotelForm = (props:Props) => {
 		stars:0,
 		roomprice:0
 	})
+	
+	const dispatch = useDispatch();
 	
 	const onChange = (event:React.ChangeEvent<HTMLInputElement>) => {
 		setState((state) => {
@@ -35,7 +35,7 @@ const HotelForm = (props:Props) => {
 	const onSubmit = (event:React.SyntheticEvent) => {
 		event.preventDefault();
 		const hotel = new Hotel(state.hname,state.address,state.city,state.stars,state.roomprice,0);
-		props.addHotel(hotel);
+		dispatch(addHotel(hotel));
 		setState({
 			hname:"",
 			address:"",
